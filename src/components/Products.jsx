@@ -1,7 +1,23 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import StarRating from './StarRating'
+import { CartContext } from '../Context/CartContext';
 const Products = ({ item }) => {
+    const { setCart, cart } = useContext(CartContext);
+    console.log("Cart Items ", cart);
+
+    const addToCart = (item) => {
+        const isItemInCart = cart.find((cartItem) => cartItem.id === item.id);
+        if (isItemInCart) {
+            setCart(cart.map((cartItem) =>
+                cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+            ));
+        } else {
+            setCart([...cart, { ...item, quantity: 1 }]);
+        }
+    }
+
+
     return (
         <>
             <Container>
@@ -12,6 +28,7 @@ const Products = ({ item }) => {
 
                         <StarRating rating={item.rating.rate} />
                         <span>({item.rating.count})</span>
+
                     </Rating>
                     <Text>Category : {item.category}</Text>
                     <Description>{item.description}</Description>
@@ -19,7 +36,7 @@ const Products = ({ item }) => {
                 </Content>
 
             </Container >
-            <Button>Add to Cart</Button>
+            <Button onClick={() => addToCart(item)}>Add to Cart</Button>
         </>
     )
 }
@@ -31,9 +48,9 @@ display: flex;
 /* justify-content: center; */
 align-items: center;
 height: 200px;
-padding: 10px;
+padding: 8px;
 width: 400px;
-margin : 5px;
+margin :0;
 
 `
 

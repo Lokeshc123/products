@@ -1,15 +1,19 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { fetchDataApi } from '../Api/getData';
 import Products from '../components/Products';
 import debounce from 'lodash.debounce';
-
+import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../Context/CartContext';
 const ProductList = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setsearch] = useState('');
     const itemsPerPage = 2;
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -58,11 +62,17 @@ const ProductList = () => {
 
     return (
         <Container>
-            <SearchBar
-                placeholder="Search Products"
-                value={search}
-                onChange={(e) => setsearch(e.target.value)}
-            />
+            <Header>
+
+                <SearchBar
+                    placeholder="Search Products"
+                    value={search}
+                    onChange={(e) => setsearch(e.target.value)}
+                />
+                <CartButton onClick={() => navigate("/cart")}>
+                    Go to Cart
+                </CartButton>
+            </Header>
             <List>
                 {currentData.map((item) => (
                     <Products key={item.id} item={item} />
@@ -94,6 +104,7 @@ const Container = styled.div`
 const List = styled.div`
     display: flex;
     flex-direction: column;
+    margin-top: 0;
 `;
 
 const Pagination = styled.div`
@@ -122,5 +133,23 @@ const SearchBar = styled.input`
     font-size: 16px;
     border: 1px solid lightgray;
     outline: none;
-    margin-bottom: 20px;
+    
+`;
+const CartButton = styled.button`
+    padding: 10px 20px;
+    font-size: 16px;
+    height : 40px;
+    border-radius: 5px;
+    background-color: #f0c14b;
+    border: 1px solid;
+    margin-left: 20px;
+   
+`;
+const Header = styled.div`
+    display: flex;
+   justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 0;
+    width: 100%;
 `;
